@@ -29,7 +29,6 @@ class PNGToolTest {
     fun parseIHDR() {
         val testFile = classLoader.getResource("simple.png").path
         val png = PNGTool(File(testFile))
-
         assertEquals(1, png.imageWidth)
         assertEquals(1, png.imageHeight)
         assertEquals(8, png.bitDepth)
