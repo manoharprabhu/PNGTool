@@ -3,7 +3,6 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.BeforeClass
 import java.io.File
-import kotlin.test.assertContains
 
 class PNGToolTest {
 
@@ -22,6 +21,8 @@ class PNGToolTest {
         val png = PNGTool(File(testFile))
         val types = png.getAllChunkTypes()
         assertEquals(listOf("IHDR", "IDAT", "IEND"), types)
+        assertTrue(png.getChunks("IHDR").isNotEmpty())
+        assertTrue(png.getChunks("NONEXIST").isEmpty())
     }
 
     @Test
@@ -43,6 +44,22 @@ class PNGToolTest {
         val testFile = classLoader.getResource("simple_datatamper.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
+        }
+    }
+
+    @Test
+    fun testIHDRMissing() {
+        val testFile = classLoader.getResource("ihdrmissing.png").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFile))
+        }
+    }
+
+    @Test
+    fun testPassDirectory() {
+        val testFolder = classLoader.getResource(".").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFolder))
         }
     }
 }
