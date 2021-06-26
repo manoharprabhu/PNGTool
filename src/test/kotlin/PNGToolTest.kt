@@ -62,4 +62,12 @@ class PNGToolTest {
             PNGTool(File(testFolder))
         }
     }
+
+    @Test
+    fun testInvalidHeader() {
+        val testFolder = classLoader.getResource("invalid_header.png").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFolder))
+        }
+    }
 }
