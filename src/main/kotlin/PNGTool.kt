@@ -7,7 +7,6 @@ import java.util.zip.CRC32
 class PNGTool(file: File) {
     private val byteBuffer: ByteBuffer
     private val chunkDictionary: HashMap<String, MutableList<Chunk>> = linkedMapOf()
-    private val crc32: CRC32 = CRC32()
     var imageWidth: Int = 0
         private set
     var imageHeight: Int = 0
@@ -85,20 +84,10 @@ class PNGTool(file: File) {
     private fun parseChunks() {
         while(byteBuffer.remaining() > 0) {
             val chunk: Chunk = getNextChunk()
-            validateCRC(chunk)
             if(!chunkDictionary.containsKey(chunk.typeString)) {
                 chunkDictionary[chunk.typeString] = mutableListOf()
             }
             chunkDictionary[chunk.typeString]?.add(chunk)
-        }
-    }
-
-    private fun validateCRC(chunk: Chunk) {
-        crc32.reset()
-        crc32.update(chunk.type)
-        crc32.update(chunk.data)
-        if(crc32.value.toInt() != chunk.crc) {
-            throw Exception("CRC validation failed for chunk $chunk")
         }
     }
 
