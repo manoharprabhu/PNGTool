@@ -29,13 +29,14 @@ class PNGToolTest {
     fun parseIHDR() {
         val testFile = classLoader.getResource("simple.png").path
         val png = PNGTool(File(testFile))
-        assertEquals(1, png.imageWidth)
-        assertEquals(1, png.imageHeight)
-        assertEquals(8, png.bitDepth)
-        assertEquals(2, png.colorType)
-        assertEquals(0, png.compressionMethod)
-        assertEquals(0, png.filterMethod)
-        assertEquals(0, png.interlaceMethod)
+        val iHDRChunk = png.getChunks("IHDR")[0] as IHDRChunk
+        assertEquals(1, iHDRChunk.imageWidth)
+        assertEquals(1, iHDRChunk.imageHeight)
+        assertEquals(8, iHDRChunk.bitDepth)
+        assertEquals(2, iHDRChunk.colorType)
+        assertEquals(0, iHDRChunk.compressionMethod)
+        assertEquals(0, iHDRChunk.filterMethod)
+        assertEquals(0, iHDRChunk.interlaceMethod)
     }
 
     @Test

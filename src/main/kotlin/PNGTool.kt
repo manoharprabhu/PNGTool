@@ -7,20 +7,7 @@ import java.util.zip.CRC32
 class PNGTool(file: File) {
     private val byteBuffer: ByteBuffer
     private val chunkDictionary: HashMap<String, MutableList<Chunk>> = linkedMapOf()
-    var imageWidth: Int = 0
-        private set
-    var imageHeight: Int = 0
-        private set
-    var bitDepth: Int = 0
-        private set
-    var colorType: Int = 0
-        private set
-    var compressionMethod: Int = 0
-        private set
-    var filterMethod: Int = 0
-        private set
-    var interlaceMethod: Int = 0
-        private set
+
 
     init {
         if(file.isDirectory) {
@@ -46,18 +33,6 @@ class PNGTool(file: File) {
         validateHeader()
         parseChunks()
         validateChunks()
-        parseIHDR()
-    }
-
-    private fun parseIHDR() {
-        val byteBuffer = ByteBuffer.wrap(chunkDictionary["IHDR"]?.get(0)?.data)
-        imageWidth = byteBuffer.int
-        imageHeight = byteBuffer.int
-        bitDepth = byteBuffer.get().toInt()
-        colorType = byteBuffer.get().toInt()
-        compressionMethod = byteBuffer.get().toInt()
-        filterMethod = byteBuffer.get().toInt()
-        interlaceMethod = byteBuffer.get().toInt()
     }
 
     private fun validateChunks() {
@@ -65,12 +40,14 @@ class PNGTool(file: File) {
             throw Exception("No IHDR chunk present in the image")
         }
 
-        if(colorType == 3 && !chunkDictionary.containsKey("PLTE")) {
+        val ihdrChunk = chunkDictionary["IHDR"]?.get(0) as IHDRChunk
+
+        if(ihdrChunk.colorType == 3 && !chunkDictionary.containsKey("PLTE")) {
             throw Exception("Color type is 3, but no PLTE chunk present")
         }
 
-        if((colorType == 0 || colorType == 4) && chunkDictionary.containsKey("PLTE")) {
-            throw Exception("PLTE chunk should not be present for color type $colorType")
+        if((ihdrChunk.colorType == 0 || ihdrChunk.colorType == 4) && chunkDictionary.containsKey("PLTE")) {
+            throw Exception("PLTE chunk should not be present for color type ${ihdrChunk.colorType}")
         }
 
         if(chunkDictionary.containsKey("PLTE")) {
@@ -97,7 +74,7 @@ class PNGTool(file: File) {
         val data = ByteArray(length)
         byteBuffer.get(data, 0, length)
         val crc: Int = byteBuffer.int
-        return Chunk(length, type, data, crc)
+        return Chunk.makeChunk(length, type, data, crc)
     }
 
     private fun extractBytes(byteBuffer: ByteBuffer, length: Int): ByteArray {
