@@ -52,9 +52,8 @@ class PNGTool(file: File) {
         }
 
         if(chunkDictionary.containsKey("PLTE")) {
-            val plte = chunkDictionary["PLTE"]!![0]
-            if(plte.length % 3 != 0) {
-                throw Exception("PLTE length is not a multiple of 3")
+            if(chunkDictionary["PLTE"]!!.size > 1) {
+                throw Exception("More than one PLTE chunk found")
             }
         }
     }
