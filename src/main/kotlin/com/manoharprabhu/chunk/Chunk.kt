@@ -1,5 +1,6 @@
+package com.manoharprabhu.chunk
+
 import java.lang.StringBuilder
-import java.util.*
 import java.util.zip.CRC32
 
 open class Chunk(val length: Int, val type: ByteArray, val data: ByteArray, val crc: Int) {
@@ -8,11 +9,19 @@ open class Chunk(val length: Int, val type: ByteArray, val data: ByteArray, val 
     companion object {
         val crc32: CRC32 = CRC32()
         private val hdrBytes = byteArrayOf(0x49, 0x48, 0x44, 0x52)
+        private val plteBytes = byteArrayOf(0x50, 0x4C, 0x54, 0x45)
+
         fun makeChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int): Chunk {
-            return if(hdrBytes.contentEquals(type)) {
-                IHDRChunk(length, type, data, crc)
-            } else {
-                Chunk(length, type, data, crc)
+            return when {
+                hdrBytes.contentEquals(type) -> {
+                    IHDRChunk(length, type, data, crc)
+                }
+                plteBytes.contentEquals(type) -> {
+                    PLTEChunk(length, type, data, crc)
+                }
+                else -> {
+                    Chunk(length, type, data, crc)
+                }
             }
         }
     }

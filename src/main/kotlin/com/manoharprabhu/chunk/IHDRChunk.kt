@@ -1,3 +1,5 @@
+package com.manoharprabhu.chunk
+
 import java.nio.ByteBuffer
 
 class IHDRChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk(length, type, data, crc) {

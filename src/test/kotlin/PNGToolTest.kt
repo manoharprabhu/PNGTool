@@ -1,3 +1,4 @@
+import com.manoharprabhu.chunk.IHDRChunk
 import org.junit.Test
 
 import org.junit.Assert.*

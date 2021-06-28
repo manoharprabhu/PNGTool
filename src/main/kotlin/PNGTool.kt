@@ -1,8 +1,9 @@
+import com.manoharprabhu.chunk.Chunk
+import com.manoharprabhu.chunk.IHDRChunk
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
-import java.util.zip.CRC32
 
 class PNGTool(file: File) {
     private val byteBuffer: ByteBuffer
