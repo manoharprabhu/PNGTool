@@ -1,4 +1,5 @@
 import com.manoharprabhu.chunk.IHDRChunk
+import com.manoharprabhu.chunk.PLTEChunk
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -66,9 +67,32 @@ class PNGToolTest {
 
     @Test
     fun testInvalidHeader() {
-        val testFolder = classLoader.getResource("invalid_header.png").path
+        val testFile = classLoader.getResource("invalid_header.png").path
         assertThrows(Exception::class.java) {
-            PNGTool(File(testFolder))
+            PNGTool(File(testFile))
+        }
+    }
+
+    @Test
+    fun testPLTEChunk() {
+        val testFile = classLoader.getResource("pointer_wait_28.png").path
+        val png = PNGTool(File(testFile))
+        assertEquals(111, (png.getChunks("PLTE")[0] as PLTEChunk).paletteEntries.size)
+    }
+
+    @Test
+    fun testTwoPLTEChunk() {
+        val testFile = classLoader.getResource("two_plte.png").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFile))
+        }
+    }
+
+    @Test
+    fun `Invalid image with color type 0 and a PLTE chunk`() {
+        val testFile = classLoader.getResource("invalid_plte_type0.png").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFile))
         }
     }
 }
