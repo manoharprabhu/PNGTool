@@ -62,6 +62,10 @@ class PNGTool(file: File) {
                 throw InvalidChunkDataException("More than one PLTE chunk found")
             }
         }
+
+        if(getAllChunkTypes()[0] != "IHDR") {
+            throw InvalidChunkDataException("IHDR must be the first chunk")
+        }
     }
 
     private fun parseChunks() {

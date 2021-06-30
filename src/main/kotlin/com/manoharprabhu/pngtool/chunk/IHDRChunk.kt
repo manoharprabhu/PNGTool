@@ -1,8 +1,18 @@
 package com.manoharprabhu.pngtool.chunk
 
+import com.manoharprabhu.pngtool.exceptions.InvalidChunkDataException
 import java.nio.ByteBuffer
 
 class IHDRChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk(length, type, data, crc) {
+    companion object {
+        val colorTypeBitDepthMapping: Map<Int, List<Int>> = mapOf(
+            Pair(0, listOf(1, 2, 4, 8, 16)),
+            Pair(2, listOf(8, 16)),
+            Pair(3, listOf(1, 2, 4, 8)),
+            Pair(4, listOf(8, 16)),
+            Pair(6, listOf(8, 16)),
+            )
+    }
     var imageWidth: Int = 0
         private set
     var imageHeight: Int = 0
@@ -20,6 +30,17 @@ class IHDRChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk
 
     init {
         parseIHDR()
+        validateIHDRData()
+    }
+
+    private fun validateIHDRData() {
+        if(!colorTypeBitDepthMapping.containsKey(colorType)) {
+            throw InvalidChunkDataException("Invalid color type in IHDR chunk = $colorType")
+        }
+
+        if(!colorTypeBitDepthMapping[colorType]!!.contains(bitDepth)) {
+            throw InvalidChunkDataException("Invalid bit depth ${bitDepth} specified for color type ${colorType} in IHDR chunk. Allowed values are ${colorTypeBitDepthMapping[colorType]}")
+        }
     }
 
     private fun parseIHDR() {
