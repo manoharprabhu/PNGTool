@@ -1,10 +1,12 @@
-package com.manoharprabhu.chunk
+package com.manoharprabhu.pngtool.chunk
+
+import com.manoharprabhu.pngtool.exceptions.InvalidChunkDataException
 
 class PLTEChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk(length, type, data, crc) {
     val paletteEntries: List<PaletteEntry>
     init {
         if(length % 3 != 0) {
-            throw Exception("PLTE length is not a multiple of 3")
+            throw InvalidChunkDataException("PLTE length is not a multiple of 3")
         }
         paletteEntries = parsePaletteEntries()
     }

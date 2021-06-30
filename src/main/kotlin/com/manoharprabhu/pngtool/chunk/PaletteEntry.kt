@@ -1,4 +1,4 @@
-package com.manoharprabhu.chunk
+package com.manoharprabhu.pngtool.chunk
 
 class PaletteEntry(val red: Byte, val green: Byte, val blue: Byte) {
     override fun toString(): String {

@@ -1,5 +1,6 @@
-package com.manoharprabhu.chunk
+package com.manoharprabhu.pngtool.chunk
 
+import com.manoharprabhu.pngtool.exceptions.InvalidChunkCRC
 import java.lang.StringBuilder
 import java.util.zip.CRC32
 
@@ -40,7 +41,7 @@ open class Chunk(val length: Int, val type: ByteArray, val data: ByteArray, val 
         crc32.update(type)
         crc32.update(data)
         if(crc32.value.toInt() != crc) {
-            throw Exception("CRC validation failed for chunk $this")
+            throw InvalidChunkCRC("CRC validation failed for chunk $this")
         }
     }
 

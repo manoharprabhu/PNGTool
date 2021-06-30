@@ -1,4 +1,4 @@
-package com.manoharprabhu.chunk
+package com.manoharprabhu.pngtool.chunk
 
 import java.nio.ByteBuffer
 

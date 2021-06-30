@@ -1,6 +1,12 @@
-import com.manoharprabhu.chunk.Chunk
-import com.manoharprabhu.chunk.IHDRChunk
+package com.manoharprabhu.pngtool
+
+import com.manoharprabhu.pngtool.chunk.Chunk
+import com.manoharprabhu.pngtool.chunk.IHDRChunk
+import com.manoharprabhu.pngtool.exceptions.InvalidChunkDataException
+import com.manoharprabhu.pngtool.exceptions.InvalidHeaderException
+import com.manoharprabhu.pngtool.exceptions.MissingChunkException
 import java.io.File
+import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
@@ -12,7 +18,7 @@ class PNGTool(file: File) {
 
     init {
         if(file.isDirectory) {
-            throw Exception("Expecting a file")
+            throw IOException("Expecting a file")
         }
         byteBuffer = ByteBuffer.wrap(file.readBytes())
         byteBuffer.order(ByteOrder.BIG_ENDIAN)
@@ -38,22 +44,22 @@ class PNGTool(file: File) {
 
     private fun validateChunks() {
         if(!chunkDictionary.containsKey("IHDR")) {
-            throw Exception("No IHDR chunk present in the image")
+            throw MissingChunkException("No IHDR chunk present in the image")
         }
 
         val ihdrChunk = chunkDictionary["IHDR"]?.get(0) as IHDRChunk
 
         if(ihdrChunk.colorType == 3 && !chunkDictionary.containsKey("PLTE")) {
-            throw Exception("Color type is 3, but no PLTE chunk present")
+            throw InvalidChunkDataException("Color type is 3, but no PLTE chunk present")
         }
 
         if((ihdrChunk.colorType == 0 || ihdrChunk.colorType == 4) && chunkDictionary.containsKey("PLTE")) {
-            throw Exception("PLTE chunk should not be present for color type ${ihdrChunk.colorType}")
+            throw InvalidChunkDataException("PLTE chunk should not be present for color type ${ihdrChunk.colorType}")
         }
 
         if(chunkDictionary.containsKey("PLTE")) {
             if(chunkDictionary["PLTE"]!!.size > 1) {
-                throw Exception("More than one PLTE chunk found")
+                throw InvalidChunkDataException("More than one PLTE chunk found")
             }
         }
     }
@@ -87,7 +93,7 @@ class PNGTool(file: File) {
 
     private fun validateHeader() {
         if(byteBuffer.int != -1991225785 || byteBuffer.int != 218765834) {
-            throw Exception("Invalid header")
+            throw InvalidHeaderException("Invalid header")
         }
     }
 }
