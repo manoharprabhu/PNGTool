@@ -41,6 +41,10 @@ class IHDRChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk
         if(!colorTypeBitDepthMapping[colorType]!!.contains(bitDepth)) {
             throw InvalidChunkDataException("Invalid bit depth ${bitDepth} specified for color type ${colorType} in IHDR chunk. Allowed values are ${colorTypeBitDepthMapping[colorType]}")
         }
+
+        if(compressionMethod != 0) {
+            throw InvalidChunkDataException("Invalid compression method $compressionMethod. Allowed value - 0")
+        }
     }
 
     private fun parseIHDR() {
