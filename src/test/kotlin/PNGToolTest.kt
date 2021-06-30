@@ -23,10 +23,14 @@ class PNGToolTest {
         }
     }
 
+    private fun getFile(name: String): File {
+        return File(classLoader.getResource(name).path)
+    }
+
     @Test
     fun `Test chunk presence sanity`() {
-        val testFile = classLoader.getResource("simple.png").path
-        val png = PNGTool(File(testFile))
+        val testFile = getFile("simple.png")
+        val png = PNGTool(testFile)
         val types = png.getAllChunkTypes()
         assertEquals(listOf("IHDR", "IDAT", "IEND"), types)
         assertTrue(png.getChunks("IHDR").isNotEmpty())
@@ -35,8 +39,8 @@ class PNGToolTest {
 
     @Test
     fun `Parse IHDR chunk sanity check`() {
-        val testFile = classLoader.getResource("simple.png").path
-        val png = PNGTool(File(testFile))
+        val testFile = getFile("simple.png")
+        val png = PNGTool(testFile)
         val iHDRChunk = png.getChunks("IHDR")[0] as IHDRChunk
         assertEquals(1, iHDRChunk.imageWidth)
         assertEquals(1, iHDRChunk.imageHeight)
@@ -49,72 +53,72 @@ class PNGToolTest {
 
     @Test
     fun `Invalid image with wrong CRC`() {
-        val testFile = classLoader.getResource("simple_datatamper.png").path
+        val testFile = getFile("simple_datatamper.png")
         assertThrows(InvalidChunkCRC::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Invalid image with no IHDR`() {
-        val testFile = classLoader.getResource("ihdrmissing.png").path
+        val testFile = getFile("ihdrmissing.png")
         assertThrows(MissingChunkException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Invalid directory param`() {
-        val testFolder = classLoader.getResource(".").path
+        val testFolder = getFile(".")
         assertThrows(IOException::class.java) {
-            PNGTool(File(testFolder))
+            PNGTool(testFolder)
         }
     }
 
     @Test
     fun `Invalid PNG header`() {
-        val testFile = classLoader.getResource("invalid_header.png").path
+        val testFile = getFile("invalid_header.png")
         assertThrows(InvalidHeaderException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Valid image with a PLTE chunk`() {
-        val testFile = classLoader.getResource("pointer_wait_28.png").path
-        val png = PNGTool(File(testFile))
+        val testFile = getFile("pointer_wait_28.png")
+        val png = PNGTool(testFile)
         assertEquals(111, (png.getChunks("PLTE")[0] as PLTEChunk).paletteEntries.size)
     }
 
     @Test
     fun `Invalid image with two PLTE chunks`() {
-        val testFile = classLoader.getResource("two_plte.png").path
+        val testFile = getFile("two_plte.png")
         assertThrows(InvalidChunkDataException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Invalid image with color type 0 and a PLTE chunk`() {
-        val testFile = classLoader.getResource("invalid_plte_type0.png").path
+        val testFile = getFile("invalid_plte_type0.png")
         assertThrows(InvalidChunkDataException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Invalid image with color type 3 and no PLTE chunk`() {
-        val testFile = classLoader.getResource("no_plte_invalid.png").path
+        val testFile = getFile("no_plte_invalid.png")
         assertThrows(InvalidChunkDataException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 
     @Test
     fun `Invalid image with non multiple of 3 PLTE chunk`() {
-        val testFile = classLoader.getResource("invalid_plte_nonthree.png").path
+        val testFile = getFile("invalid_plte_nonthree.png")
         assertThrows(InvalidChunkDataException::class.java) {
-            PNGTool(File(testFile))
+            PNGTool(testFile)
         }
     }
 }
