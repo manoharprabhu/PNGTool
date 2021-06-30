@@ -18,7 +18,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun parsePNG() {
+    fun `Test chunk presence sanity`() {
         val testFile = classLoader.getResource("simple.png").path
         val png = PNGTool(File(testFile))
         val types = png.getAllChunkTypes()
@@ -28,7 +28,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun parseIHDR() {
+    fun `Parse IHDR chunk sanity check`() {
         val testFile = classLoader.getResource("simple.png").path
         val png = PNGTool(File(testFile))
         val iHDRChunk = png.getChunks("IHDR")[0] as IHDRChunk
@@ -42,7 +42,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun testCRCFail() {
+    fun `Invalid image with wrong CRC`() {
         val testFile = classLoader.getResource("simple_datatamper.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
@@ -50,7 +50,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun testIHDRMissing() {
+    fun `Invalid image with no IHDR`() {
         val testFile = classLoader.getResource("ihdrmissing.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
@@ -58,7 +58,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun testPassDirectory() {
+    fun `Invalid directory param`() {
         val testFolder = classLoader.getResource(".").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFolder))
@@ -66,7 +66,7 @@ class PNGToolTest {
     }
 
     @Test
-    fun testInvalidHeader() {
+    fun `Invalid PNG header`() {
         val testFile = classLoader.getResource("invalid_header.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
@@ -74,14 +74,14 @@ class PNGToolTest {
     }
 
     @Test
-    fun testPLTEChunk() {
+    fun `Valid image with a PLTE chunk`() {
         val testFile = classLoader.getResource("pointer_wait_28.png").path
         val png = PNGTool(File(testFile))
         assertEquals(111, (png.getChunks("PLTE")[0] as PLTEChunk).paletteEntries.size)
     }
 
     @Test
-    fun testTwoPLTEChunk() {
+    fun `Invalid image with two PLTE chunks`() {
         val testFile = classLoader.getResource("two_plte.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
@@ -91,6 +91,14 @@ class PNGToolTest {
     @Test
     fun `Invalid image with color type 0 and a PLTE chunk`() {
         val testFile = classLoader.getResource("invalid_plte_type0.png").path
+        assertThrows(Exception::class.java) {
+            PNGTool(File(testFile))
+        }
+    }
+
+    @Test
+    fun `Invalid image with color type 3 and no PLTE chunk`() {
+        val testFile = classLoader.getResource("no_plte_invalid.png").path
         assertThrows(Exception::class.java) {
             PNGTool(File(testFile))
         }
