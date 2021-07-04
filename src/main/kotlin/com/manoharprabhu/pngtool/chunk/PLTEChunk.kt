@@ -3,7 +3,7 @@ package com.manoharprabhu.pngtool.chunk
 import com.manoharprabhu.pngtool.exceptions.InvalidChunkDataException
 
 class PLTEChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk(length, type, data, crc) {
-    val paletteEntries: List<PaletteEntry>
+    private val paletteEntries: List<PaletteEntry>
     init {
         if(length % 3 != 0) {
             throw InvalidChunkDataException("PLTE length is not a multiple of 3")
@@ -12,7 +12,7 @@ class PLTEChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk
     }
 
     override fun toString(): String {
-        return "PLTE - ${data.size / 3} palette entries"
+        return "${super.toString()} | paletteEntries - ${paletteEntries.size / 3} entries"
     }
 
     private fun parsePaletteEntries(): List<PaletteEntry> {

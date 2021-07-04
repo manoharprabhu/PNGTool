@@ -57,4 +57,8 @@ class IHDRChunk(length: Int, type: ByteArray, data: ByteArray, crc: Int) : Chunk
         filterMethod = byteBuffer.get().toInt()
         interlaceMethod = byteBuffer.get().toInt()
     }
+
+    override fun toString(): String {
+        return "${super.toString()} | width - $imageWidth | height - $imageHeight | bitDepth - $bitDepth | colorType - $colorType | compressionMethod - $compressionMethod | filterMethod - $filterMethod | interlaceMethod - $interlaceMethod"
+    }
 }

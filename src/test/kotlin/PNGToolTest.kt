@@ -34,9 +34,9 @@ class PNGToolTest {
         val types = png.getAllChunkTypes()
         assertEquals(listOf("IHDR", "IDAT", "IEND"), types)
 
-        assertEquals("[IHDR - 13 bytes | CRC - -1871227938 | critical? - true]", png.getChunks("IHDR").toString())
-        assertEquals("[IDAT - 12 bytes | CRC - 417172912 | critical? - true]", png.getChunks("IDAT").toString())
-        assertEquals("[IEND - 0 bytes | CRC - -1371381630 | critical? - true]", png.getChunks("IEND").toString())
+        assertEquals("IHDR - 13 bytes | CRC - -1871227938 | critical? - true | width - 1 | height - 1 | bitDepth - 8 | colorType - 2 | compressionMethod - 0 | filterMethod - 0 | interlaceMethod - 0", png.getChunks("IHDR")[0].toString())
+        assertEquals("IDAT - 12 bytes | CRC - 417172912 | critical? - true", png.getChunks("IDAT")[0].toString())
+        assertEquals("IEND - 0 bytes | CRC - -1371381630 | critical? - true", png.getChunks("IEND")[0].toString())
         
         assertTrue(png.getChunks("IHDR").isNotEmpty())
 
@@ -93,7 +93,7 @@ class PNGToolTest {
     fun `Valid image with a PLTE chunk`() {
         val testFile = getFile("pointer_wait_28.png")
         val png = PNGTool(testFile)
-        assertEquals(111, (png.getChunks("PLTE")[0] as PLTEChunk).paletteEntries.size)
+        assertEquals("PLTE - 333 bytes | CRC - -1835009928 | critical? - true | paletteEntries - 37 entries", png.getChunks("PLTE")[0].toString())
     }
 
     @Test
