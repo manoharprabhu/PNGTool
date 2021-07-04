@@ -38,7 +38,9 @@ class PNGToolTest {
         assertEquals("IDAT - 12 bytes | CRC - 417172912 | critical? - true", png.getChunks("IDAT")[0].toString())
         assertEquals("IEND - 0 bytes | CRC - -1371381630 | critical? - true", png.getChunks("IEND")[0].toString())
         
-        assertTrue(png.getChunks("IHDR").isNotEmpty())
+        assertNotNull(png.getIHDRChunk())
+
+        assertNull(png.getPLTEChunk())
 
         assertTrue(png.getChunks("NONEXIST").isEmpty())
     }
@@ -47,7 +49,7 @@ class PNGToolTest {
     fun `Parse IHDR chunk sanity check`() {
         val testFile = getFile("simple.png")
         val png = PNGTool(testFile)
-        val iHDRChunk = png.getChunks("IHDR")[0] as IHDRChunk
+        val iHDRChunk = png.getIHDRChunk()
         assertEquals(1, iHDRChunk.imageWidth)
         assertEquals(1, iHDRChunk.imageHeight)
         assertEquals(8, iHDRChunk.bitDepth)
@@ -93,7 +95,7 @@ class PNGToolTest {
     fun `Valid image with a PLTE chunk`() {
         val testFile = getFile("pointer_wait_28.png")
         val png = PNGTool(testFile)
-        assertEquals("PLTE - 333 bytes | CRC - -1835009928 | critical? - true | paletteEntries - 37 entries", png.getChunks("PLTE")[0].toString())
+        assertEquals("PLTE - 333 bytes | CRC - -1835009928 | critical? - true | paletteEntries - 37 entries", png.getPLTEChunk()?.toString())
     }
 
     @Test

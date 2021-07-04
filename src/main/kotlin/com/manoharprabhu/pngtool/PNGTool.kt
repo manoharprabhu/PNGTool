@@ -2,6 +2,7 @@ package com.manoharprabhu.pngtool
 
 import com.manoharprabhu.pngtool.chunk.Chunk
 import com.manoharprabhu.pngtool.chunk.IHDRChunk
+import com.manoharprabhu.pngtool.chunk.PLTEChunk
 import com.manoharprabhu.pngtool.exceptions.InvalidChunkDataException
 import com.manoharprabhu.pngtool.exceptions.InvalidHeaderException
 import com.manoharprabhu.pngtool.exceptions.MissingChunkException
@@ -34,6 +35,17 @@ class PNGTool(file: File) {
             return Collections.unmodifiableList(chunkDictionary[type])
         }
         return listOf()
+    }
+
+    fun getIHDRChunk(): IHDRChunk {
+        return getChunks("IHDR")[0] as IHDRChunk
+    }
+
+    fun getPLTEChunk(): PLTEChunk? {
+        if(chunkDictionary.containsKey("PLTE")) {
+            return getChunks("PLTE")[0] as PLTEChunk
+        }
+        return null;
     }
 
     private fun parsePNG() {
