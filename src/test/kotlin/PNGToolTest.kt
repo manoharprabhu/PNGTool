@@ -151,4 +151,7 @@ class PNGToolTest {
             PNGTool(testFile)
         }
     }
+
+    // TODO: Add test for invalid image with IHDR not the first chunk
+    // TODO: Add test for image with invalid length
 }
