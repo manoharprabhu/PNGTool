@@ -121,4 +121,28 @@ class PNGToolTest {
             PNGTool(testFile)
         }
     }
+
+    @Test
+    fun `Invalid color type in IHDR chunk`() {
+        val testFile = getFile("invalid_ihdr_colortype.png")
+        assertThrows(InvalidChunkDataException::class.java) {
+            PNGTool(testFile)
+        }
+    }
+
+    @Test
+    fun `Invalid bit depth in IHDR chunk`() {
+        val testFile = getFile("invalid_ihdr_bitdepth.png")
+        assertThrows(InvalidChunkDataException::class.java) {
+            PNGTool(testFile)
+        }
+    }
+
+    @Test
+    fun `Invalid compression mode in IHDR`() {
+        val testFile = getFile("invalid_ihdr_compression.png")
+        assertThrows(InvalidChunkDataException::class.java) {
+            PNGTool(testFile)
+        }
+    }
 }
