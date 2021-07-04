@@ -33,7 +33,13 @@ class PNGToolTest {
         val png = PNGTool(testFile)
         val types = png.getAllChunkTypes()
         assertEquals(listOf("IHDR", "IDAT", "IEND"), types)
+
+        assertEquals("[IHDR - 13 bytes | CRC - -1871227938 | critical? - true]", png.getChunks("IHDR").toString())
+        assertEquals("[IDAT - 12 bytes | CRC - 417172912 | critical? - true]", png.getChunks("IDAT").toString())
+        assertEquals("[IEND - 0 bytes | CRC - -1371381630 | critical? - true]", png.getChunks("IEND").toString())
+        
         assertTrue(png.getChunks("IHDR").isNotEmpty())
+
         assertTrue(png.getChunks("NONEXIST").isEmpty())
     }
 
