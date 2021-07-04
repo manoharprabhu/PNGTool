@@ -81,7 +81,7 @@ class PNGTool(file: File) {
     private fun getNextChunk(): Chunk {
         val length = byteBuffer.int
         if(length < 0 || length >= 1024 * 1024 * 1024) { // 1GB
-            throw InvalidChunkDataException("Chunk is too big. $length bytes")
+            throw InvalidChunkDataException("Chunk is too big. ${length.toUInt()} bytes")
         }
         val type = extractBytes(byteBuffer, 4)
         val data = ByteArray(length)

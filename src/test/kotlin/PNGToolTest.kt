@@ -152,6 +152,20 @@ class PNGToolTest {
         }
     }
 
-    // TODO: Add test for invalid image with IHDR not the first chunk
-    // TODO: Add test for image with invalid length
+    @Test
+    fun `Invalid image with wrong IHDR chunk position`() {
+        val testFile = getFile("invalid_ihdrposition.png")
+        assertThrows(InvalidChunkDataException::class.java) {
+            PNGTool(testFile)
+        }
+    }
+
+    @Test
+    fun `Invalid image with invalid chunk length`() {
+        val testFile = getFile("invalid_chunklength.png")
+        assertThrows(InvalidChunkDataException::class.java) {
+            PNGTool(testFile)
+        }
+    }
+
 }
